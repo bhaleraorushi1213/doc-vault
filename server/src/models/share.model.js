@@ -30,5 +30,6 @@ const shareSchema = new mongoose.Schema(
   }
 );
 
-const Share = mongoose.model("Share", shareSchema);
-export default Share;
+shareSchema.index({ document: 1, sharedWith: 1 }, { unique: true });
+
+const Share = mongoose.model("Share", shareSchema);export default Share;

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const roleSchema = new new mongoose.Schema(
+const roleSchema = new mongoose.Schema(
   {
     roleName: {
       type: String,
