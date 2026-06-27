@@ -15,14 +15,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       select: false
-    }, department: {
+    }, 
+    profilePicture: {
       type: String
     },
-    role: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Role",
-      required: true
+    department: {
+      type: String
     },
+    // role: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Role",
+    //   required: true
+    // },
     status: {
       type: String
     },
