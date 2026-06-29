@@ -38,6 +38,12 @@ const App = () => {
             element={!authUser ? <LoginPage /> : <Navigate to="/" />}
           />
         </Routes>
+
+		   <Route
+            path="/dashboard"
+            element={<Dashboard />}
+          />
+
       </div>
     </>
   )
