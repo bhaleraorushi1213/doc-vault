@@ -67,12 +67,30 @@ const Sidebar = ({ isCollapsed, onToggle }) => {
         isCollapsed ? "w-[72px]" : "w-[240px]"
       }`}
     >
-      <div className={`flex items-center gap-3 px-4 h-16 border-b border-gray-200 ${isCollapsed ? "justify-center" : ""}`}>
-        <div className="bg-blue-800 text-white w-9 h-9 rounded-lg flex justify-center items-center shrink-0">
-          <FileTextIcon className="size-5" />
-        </div>
-        {!isCollapsed && <span className="font-bold text-lg whitespace-nowrap">DocVault</span>}
-      </div>
+     <button
+  type="button"
+  onClick={onToggle}
+  className={`flex items-center gap-3 px-4 h-16 border-b border-gray-200
+  hover:bg-gray-50 transition-colors duration-200
+  ${isCollapsed ? "justify-center" : "justify-between"}
+`}
+>
+  <div className="flex items-center gap-3">
+    <div className="bg-blue-800 text-white w-9 h-9 rounded-lg flex justify-center items-center shrink-0">
+      <FileTextIcon className="size-5" />
+    </div>
+
+    {!isCollapsed && (
+      <span className="font-bold text-lg whitespace-nowrap">
+        DocVault
+      </span>
+    )}
+  </div>
+
+  {!isCollapsed && (
+    <ChevronLeftIcon className="size-4 text-gray-400" />
+  )}
+</button>
 
       <nav className="flex-1 py-4 px-2 flex flex-col gap-1">
         {NAV_ITEMS.map((item) => {
@@ -94,14 +112,7 @@ const Sidebar = ({ isCollapsed, onToggle }) => {
         })}
       </nav>
 
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex items-center justify-center gap-2 m-2 py-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-150 text-sm"
-      >
-        {isCollapsed ? <ChevronRightIcon className="size-5" /> : <ChevronLeftIcon className="size-5" />}
-        {!isCollapsed && <span></span>}
-      </button>
+
     </aside>
   );
 };
@@ -115,38 +126,58 @@ const Topbar = ({ searchQuery, onSearchChange, onToggleSidebar, authUser }) => {
 
   return (
     <header className="sticky top-0 z-10 flex items-center gap-4 h-16 px-4 md:px-6 bg-white border-b border-gray-200">
-      <button type="button" onClick={onToggleSidebar} className="md:hidden text-gray-600">
-        <MenuIcon className="size-6" />
-      </button>
 
-      <div className="flex-1 max-w-md">
-        <div className="flex items-center gap-3 border border-gray-300 rounded-lg px-3 py-2 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-300/20 transition-all duration-200">
-          <SearchIcon className="size-4 text-gray-400 shrink-0" />
-          <input
-            type="text"
-            placeholder="Search documents, folders, people..."
-            className="w-full text-sm focus:outline-none"
-            value={searchQuery}
-            onChange={onSearchChange}
-          />
-        </div>
+  <button
+    type="button"
+    onClick={onToggleSidebar}
+    className="md:hidden text-gray-600"
+  >
+    <MenuIcon className="size-6" />
+  </button>
+
+  {/* Search */}
+  <div className="flex-1">
+    <div className="max-w-md">
+      <div className="flex items-center gap-3 border border-gray-300 rounded-lg px-3 py-2 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-300/20 transition-all duration-200">
+        <SearchIcon className="size-4 text-gray-400 shrink-0" />
+        <input
+          type="text"
+          placeholder="Search documents, folders, people..."
+          className="w-full text-sm focus:outline-none"
+          value={searchQuery}
+          onChange={onSearchChange}
+        />
+      </div>
+    </div>
+  </div>
+
+  {/* Right Section */}
+  <div className="ml-auto flex items-center gap-5">
+
+    <button
+      type="button"
+      className="relative text-gray-500 hover:text-gray-700"
+    >
+      <BellIcon className="size-5" />
+      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] leading-none rounded-full w-4 h-4 flex items-center justify-center">
+        3
+      </span>
+    </button>
+
+    <div className="hidden sm:flex items-center gap-3 pl-5 border-l border-gray-200">
+      <div className="bg-blue-800 text-white w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
+        {initial}
       </div>
 
-      <button type="button" className="relative text-gray-500 hover:text-gray-700">
-        <BellIcon className="size-5" />
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] leading-none rounded-full w-4 h-4 flex items-center justify-center">3</span>
-      </button>
-
-      <div className="hidden sm:flex items-center gap-3 pl-3 border-l border-gray-200">
-        <div className="bg-blue-800 text-white w-9 h-9 rounded-full flex justify-center items-center font-semibold text-sm shrink-0">
-          {initial}
-        </div>
-        <div className="leading-tight">
-          <p className="text-sm font-semibold">{displayName}</p>
-          <p className="text-xs text-gray-500">{roleName}</p>
-        </div>
+      <div className="leading-tight">
+        <p className="text-sm font-semibold">{displayName}</p>
+        <p className="text-xs text-gray-500">{roleName}</p>
       </div>
-    </header>
+    </div>
+
+  </div>
+
+</header>
   );
 };
 
