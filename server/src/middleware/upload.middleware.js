@@ -8,13 +8,27 @@ if (!fs.existsSync(UPLOAD_DIR)) {                         // fs.existsSync() che
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });          // If it is missing, fs.mkdirSync safely creates it. 
 }                                                         // {recursive: true} ensures parent folders are built if needed
 
+const MIME_TO_EXT = {
+  "application/pdf": ".pdf",
+  "application/msword": ".doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
+  "application/vnd.ms-excel": ".xls",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+  "text/plain": ".txt",
+  "text/csv": ".csv",
+  "image/png": ".png",
+  "image/jpeg": ".jpg",
+  "image/jpg": ".jpg",
+};
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {                       // Tells Multer to save uploaded files directly to the local disk inside the uploads directory.
     cb(null, UPLOAD_DIR);
   },
+  
   filename: (req, file, cb) => {
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;  // prefix with timestamp + random suffix so two uploads with the same
-    const ext = path.extname(file.originalname);                              // original filename never collide on disk eg. 1719875400000-482910384.pdf
+    const ext = MIME_TO_EXT[file.mimetype] || "";                              // original filename never collide on disk eg. 1719875400000-482910384.pdf
     cb(null, `${uniqueSuffix}${ext}`);
   },
 });
@@ -39,8 +53,7 @@ const fileFilter = (req, file, cb) => {
   } else {
     cb(new Error(`File type '${file.mimetype}' is not allowed`), false);
   }
-};
- 
+}; 
 export const upload = multer({
   storage,
   fileFilter,

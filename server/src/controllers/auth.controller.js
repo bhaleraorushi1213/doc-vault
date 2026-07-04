@@ -8,7 +8,6 @@ import Role from "../models/role.model.js";
 //@route           POST /api/auth/signup
 //@access          Public
 export const signup = async (req, res) => {
-  console.log("Signup request body:", req.body); // Log the request body for debugging
   const { email, name, password } = req.body; // getting name, email, password from request send by frontend
 
   try {

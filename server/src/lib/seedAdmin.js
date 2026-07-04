@@ -30,13 +30,12 @@ const seedAdmin = async () => {
       process.exit(1);
     }
 
-    const existing = await User.findOne({ email });
+    const existing = await User.findOne({ email }).select("+password");
     if (existing) {
       // if the user already exists (e.g. you signed up normally first), just promote them
       existing.role = adminRole._id;
-      await existing.save();
-      console.log(`Existing user ${email} promoted to Admin.`);
-    } else {
+      await existing.save({ validateModifiedOnly: true });
+      console.log(`Existing user ${email} promoted to Admin.`);    } else {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
