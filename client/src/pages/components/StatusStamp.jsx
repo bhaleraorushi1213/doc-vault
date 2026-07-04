@@ -1,6 +1,6 @@
-import { ROLE_CLASSES, STATUS_CONFIG } from "./utils.js";
+import { STATUS_CONFIG } from "../../lib/constants.js";
 
-export const StatusStamp = ({ status }) => {
+const StatusStamp = ({ status }) => {
   const config = STATUS_CONFIG[status?.toLowerCase()];
   if (!config) return null;
   const Icon = config.icon;
@@ -14,12 +14,4 @@ export const StatusStamp = ({ status }) => {
   );
 };
 
-export const RoleBadge = ({ roleName }) => (
-  <span
-    className={`inline-flex items-center px-2 py-0.5 rounded border text-[11px] font-semibold ${
-      ROLE_CLASSES[roleName] || ROLE_CLASSES.Employee
-    }`}
-  >
-    {roleName}
-  </span>
-);
+export default StatusStamp;

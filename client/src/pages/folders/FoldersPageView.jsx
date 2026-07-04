@@ -2,11 +2,11 @@ import { useState } from "react";
 
 import { FolderIcon, FileTextIcon, PlusIcon, ChevronRightIcon, Trash2Icon, PencilIcon } from "lucide-react";
 import { formatRelativeTime } from "../../lib/utils.js";
-import { StatusStamp } from "../../lib/helper.jsx";
 
-import Modal from "../components/Modal";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Modal from "../components/Modal.jsx";
+import Sidebar from "../components/Sidebar.jsx";
+import Topbar from "../components/Topbar.jsx";
+import StatusStamp from "../components/StatusStamp.jsx";
 
 const CreateFolderModal = ({ onClose, onConfirm }) => {
   const [name, setName] = useState("");

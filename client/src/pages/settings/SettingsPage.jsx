@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 import { useAuthStore } from "../../store/useAuthStore.js";
 
-import SettingsViewPage from "./SettingsViewPage.jsx";
+import SettingsPageView from "./SettingsPageView.jsx";
 
 const SettingsPage = () => {
   const { authUser, logout } = useAuthStore();
@@ -85,7 +85,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <SettingsViewPage
+    <SettingsPageView
       settingsState={settingsState}
       authUser={authUser}
       profileForm={profileForm}

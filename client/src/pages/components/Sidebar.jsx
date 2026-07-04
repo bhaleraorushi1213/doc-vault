@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, FileTextIcon } from "lucide-react";
-import { NAV_ITEMS } from "../../lib/utils.js";
+import { NAV_ITEMS } from "../../lib/constants.js";
 
 const Sidebar = ({ isCollapsed, onToggle, activeItem, onNavigate }) => {
   return (

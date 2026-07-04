@@ -3,7 +3,7 @@ import { useNavigate } from "react-router"
 
 import { useAuthStore } from "../../store/useAuthStore.js";
 
-import DashboardViewPage from "./DashboardViewPage";
+import DashboardPageView from "./DashboardPageView";
 
 // Mock data shaped like what your API/store would return.
 // Replace with real store calls (e.g. useDocumentStore, useActivityStore) when wired up.
@@ -80,7 +80,7 @@ const DashboardPage = () => {
   }
 
   return (
-    <DashboardViewPage
+    <DashboardPageView
       dashboardState={dashboardState}
       authUser={authUser}
       stats={MOCK_STATS}
