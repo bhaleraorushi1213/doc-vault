@@ -5,7 +5,7 @@ import { formatRelativeTime } from "../../lib/utils.js";
 
 import Modal from "../components/Modal.jsx";
 import Sidebar from "../components/Sidebar.jsx";
-import Topbar from "../components/Topbar.jsx";
+import Topbar from "../components/TopBar.jsx";
 import StatusStamp from "../components/StatusStamp.jsx";
 
 const CreateFolderModal = ({ onClose, onConfirm }) => {

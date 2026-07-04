@@ -1,6 +1,6 @@
-import RoleBadge from "../components/RoleBadge";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import RoleBadge from "../components/RoleBadge.jsx";
+import Sidebar from "../components/Sidebar.jsx";
+import Topbar from "../components/Topbar.jsx";
 
 const SettingsSection = ({ title, description, children }) => (
   <div className="bg-white border border-gray-200 rounded-lg">

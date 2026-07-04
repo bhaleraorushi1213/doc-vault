@@ -11,14 +11,10 @@ import {
 import Modal from "../components/Modal"
 import { formatRelativeTime } from "../../lib/utils.js";
 import Sidebar from "../components/Sidebar.jsx";
-import Topbar from "../components/Topbar.jsx";
+import Topbar from "../components/TopBar.jsx";
 import StatusStamp from "../components/StatusStamp.jsx";
 
-
 const FILTERS = ["All", "Pending", "Approved", "Rejected"];
-
-// --- reject modal: forces a comment before submitting, matching the backend
-// requirement that rejections must include a reason -----------------------
 
 const RejectModal = ({ document, onClose, onConfirm }) => {
   const [comment, setComment] = useState("");
