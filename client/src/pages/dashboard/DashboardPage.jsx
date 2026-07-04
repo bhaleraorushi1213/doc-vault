@@ -1,6 +1,9 @@
 import { useState } from "react";
-import DashboardView from "./DashboardView";
-import { useAuthStore } from "../../store/useAuthStore";
+import { useNavigate } from "react-router"
+
+import { useAuthStore } from "../../store/useAuthStore.js";
+
+import DashboardViewPage from "./DashboardViewPage";
 
 // Mock data shaped like what your API/store would return.
 // Replace with real store calls (e.g. useDocumentStore, useActivityStore) when wired up.
@@ -39,7 +42,7 @@ const MOCK_FOLDERS = [
   { id: "f6", name: "Engineering", documentCount: 382, accessLevel: "Team" },
 ];
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [dashboardState, setDashboardState] = useState({
     isSidebarCollapsed: false,
     searchQuery: "",
@@ -48,6 +51,8 @@ const Dashboard = () => {
 
   // In your real app this would come from useAuthStore (role, name, org, etc).
   const { authUser } = useAuthStore();
+
+  const navigate = useNavigate();
 
   const handleToggleSidebar = () => {
     setDashboardState((prevState) => ({
@@ -70,8 +75,12 @@ const Dashboard = () => {
     }));
   };
 
+  const handleNavigate = (item) => {
+    navigate(item.path);
+  }
+
   return (
-    <DashboardView
+    <DashboardViewPage
       dashboardState={dashboardState}
       authUser={authUser}
       stats={MOCK_STATS}
@@ -81,8 +90,9 @@ const Dashboard = () => {
       handleToggleSidebar={handleToggleSidebar}
       handleSearchChange={handleSearchChange}
       handleFolderSelect={handleFolderSelect}
+      handleNavigate={handleNavigate}
     />
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

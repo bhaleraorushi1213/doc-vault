@@ -1,10 +1,16 @@
-import { Navigate, Route, Routes } from "react-router"
-import HomePage from "./pages/HomePage"
+import { useEffect } from "react";
+import { Navigate, Route, Routes } from "react-router";
+
 import { useAuthStore } from "./store/useAuthStore.js";
+import { Loader } from "lucide-react";
+
+import HomePage from "./pages/HomePage"
 import SignUpPage from "./pages/auth/signup/SignUpPage.jsx";
 import LoginPage from "./pages/auth/login/LoginPage.jsx";
-import { useEffect } from "react";
-import { Loader } from "lucide-react";
+import DocumentsPage from "./pages/documents/DocumentsPage.jsx";
+import UsersRolesPage from "./pages/user-roles/UersRolesPage.jsx";
+import FoldersPage from "./pages/folders/FoldersPage.jsx";
+import SettingsPage from "./pages/settings/SettingsPage.jsx";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -36,6 +42,22 @@ const App = () => {
           <Route
             path="/login"
             element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/documents"
+            element={!authUser ? <LoginPage /> : <DocumentsPage />}
+          />
+          <Route
+            path="/users"
+            element={!authUser ? <LoginPage /> : <UsersRolesPage/>}
+          />
+          <Route
+            path="/folders"
+            element={!authUser ? <LoginPage /> : <FoldersPage />}
+          />
+          <Route
+            path="/settings"
+            element={!authUser ? <LoginPage /> : <SettingsPage />}
           />
         </Routes>
       </div>
