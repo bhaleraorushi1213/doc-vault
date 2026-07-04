@@ -27,7 +27,31 @@ app.use("/api/folders", folderRoutes);        // this is our folder management r
 app.use("/api/users", userRoutes);            // this is our admin user-management route
 app.use("/api/documents", documentRoutes);    // this is our document upload/management route
 
-app.listen(PORT, () => {
-  console.log("Server is running on port: ", PORT);
-  connectDB();
+// centralized error handler - normalize Multer and upload errors to JSON
+app.use((err, req, res, next) => {
+  if (!err) return next();
+
+  // Multer errors often have name 'MulterError' and code like 'LIMIT_FILE_SIZE'
+  if (err.name === "MulterError" || (err.code && String(err.code).startsWith("LIMIT_"))) {
+    return res.status(400).json({ message: err.message || "File upload error" });
+  }
+
+  // fileFilter in upload.middleware throws a regular Error with a message about file type
+  if (err.message && err.message.startsWith("File type")) {
+    return res.status(400).json({ message: err.message });
+  }
+
+  console.error("Unhandled error:", err);
+  return res.status(500).json({ message: "Internal server error" });
+});
+
+connectDB()
+.then(() => {
+  app.listen(PORT, () => {
+    console.log("Server is running on port: ", PORT);
+  });
 })
+.catch((err) => {
+  console.error("Failed to connect to database:", err);
+  process.exit(1);
+});

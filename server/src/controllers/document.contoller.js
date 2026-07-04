@@ -3,6 +3,19 @@ import path from "path";
 import Document from "../models/document.model.js";
 import Folder from "../models/folder.model.js";
 
+const UPLOAD_DIR = path.join(process.cwd(), "uploads");
+
+// a document is visible to: its uploader, or anyone who can approve documents
+// (Admin/Manager). "document:read" is intentionally NOT used here - every role
+// has that permission, so checking it would make every document visible to
+// every employee regardless of who uploaded it. Once Share records exist,
+// add a third check here: an active Share document naming this user.
+const canAccessDocument = (document, user) => {
+  const isOwner = document.uploadedBy?.toString() === user._id.toString();
+  const isApprover = (user?.role?.permissions || []).includes("document:approve");
+  return isOwner || isApprover;
+};
+
 //@description     Upload a new document, optionally into a folder
 //@route           POST /api/documents
 //@access          Protected - requires "document:upload" permission
@@ -27,7 +40,8 @@ export const uploadDocument = async (req, res) => {
 
     const document = await Document.create({
       fileName: req.file.originalname,
-      fileUrl: req.file.path,
+      // store a relative identifier (filename) instead of absolute filesystem path
+      fileUrl: req.file.filename,
       fileSize: req.file.size,
       fileType: req.file.mimetype,
       folder: folder || null,
@@ -67,9 +81,10 @@ export const getDocumentById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const document = await Document.findOne({ _id: id, uploadedBy: req.user._id });
+    // fetch by id and then enforce access rules so managers/admins can view others' documents
+    const document = await Document.findById(id);
 
-    if (!document) {
+    if (!document || !canAccessDocument(document, req.user)) {
       return res.status(404).json({ message: "Document not found" });
     }
 
@@ -87,17 +102,19 @@ export const downloadDocument = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const document = await Document.findOne({ _id: id, uploadedBy: req.user._id });
+    // fetch by id and enforce access rules similar to getDocumentById/updateApprovalStatus
+    const document = await Document.findById(id);
 
-    if (!document) {
+    if (!document || !canAccessDocument(document, req.user)) {
       return res.status(404).json({ message: "Document not found" });
     }
 
-    if (!fs.existsSync(document.fileUrl)) {
+    const absolutePath = path.join(UPLOAD_DIR, document.fileUrl);
+    if (!fs.existsSync(absolutePath)) {
       return res.status(404).json({ message: "File is missing from storage" });
     }
 
-    return res.download(document.fileUrl, document.fileName);
+    return res.download(absolutePath, document.fileName);
   } catch (error) {
     console.log("Error in downloadDocument controller", error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -117,7 +134,8 @@ export const deleteDocument = async (req, res) => {
       return res.status(404).json({ message: "Document not found" });
     }
 
-    fs.unlink(document.fileUrl, (err) => {          // remove the physical file, but don't fail the request if it's already gone
+    const absolutePathToDelete = path.join(UPLOAD_DIR, document.fileUrl);
+    fs.unlink(absolutePathToDelete, (err) => {          // remove the physical file, but don't fail the request if it's already gone
       if (err) {
         console.log("Warning: could not delete file from disk:", err.message);
       }
@@ -153,15 +171,14 @@ export const updateApprovalStatus = async (req, res) => {
     // tighten this query to only documents visible to the approver's team.
     const document = await Document.findByIdAndUpdate(
       id,
-      { 
+      {
         approvalStatus: status,
-        rejectionComment: status === "Rejected" ? comment.trim() : undefined,
+        rejectionComment: status === "Rejected" ? comment.trim() : null,
         reviewedBy: req.user._id,
         reviewedAt: new Date(),
-       },
-      { returnDocument: true }
+      },
+      { new: true }
     );
-
     if (!document) {
       return res.status(404).json({ message: "Document not found" });
     }
