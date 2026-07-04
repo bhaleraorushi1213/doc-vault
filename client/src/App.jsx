@@ -8,7 +8,7 @@ import HomePage from "./pages/HomePage"
 import SignUpPage from "./pages/auth/signup/SignUpPage.jsx";
 import LoginPage from "./pages/auth/login/LoginPage.jsx";
 import DocumentsPage from "./pages/documents/DocumentsPage.jsx";
-import UsersRolesPage from "./pages/user-roles/UersRolesPage.jsx";
+import UserRolesPage from "./pages/user-roles/UserRolesPage.jsx";
 import FoldersPage from "./pages/folders/FoldersPage.jsx";
 import SettingsPage from "./pages/settings/SettingsPage.jsx";
 
@@ -49,7 +49,7 @@ const App = () => {
           />
           <Route
             path="/users"
-            element={!authUser ? <LoginPage /> : <UsersRolesPage/>}
+            element={!authUser ? <LoginPage /> : <UserRolesPage/>}
           />
           <Route
             path="/folders"
