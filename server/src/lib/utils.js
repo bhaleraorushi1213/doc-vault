@@ -14,5 +14,4 @@ export const generateToken = (userId, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
   });// this is the cookie that will be sent to the client
-
 }

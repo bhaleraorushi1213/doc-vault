@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+// this is where we have connected our database
 
 export const connectDB = async () => {
   try {
@@ -9,5 +10,4 @@ export const connectDB = async () => {
     console.error('Error connecting to MongoDB:', error);
     process.exit(1);
   } 
-  // this is where we have connected our database
 };
