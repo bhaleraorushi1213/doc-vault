@@ -1,187 +1,16 @@
 import {
-  BellIcon,
-  CheckCircle2Icon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
   ClockIcon,
   FileTextIcon,
   FolderIcon,
   HardDriveIcon,
-  LayoutDashboardIcon,
-  MenuIcon,
-  SearchIcon,
-  SettingsIcon,
   ShieldIcon,
   UploadIcon,
-  UsersIcon,
-  XCircleIcon,
 } from "lucide-react";
 
-// --- helpers -----------------------------------------------------------
-
-const formatRelativeTime = (isoString) => {
-  const diffMs = Date.now() - new Date(isoString).getTime();
-  const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-  if (diffHrs < 1) return "Just now";
-  if (diffHrs < 24) return `${diffHrs}h ago`;
-  const diffDays = Math.floor(diffHrs / 24);
-  return `${diffDays}d ago`;
-};
-
-const STATUS_CONFIG = {
-  approved: { label: "Approved", icon: CheckCircle2Icon, classes: "text-emerald-700 border-emerald-300 bg-emerald-50" },
-  pending: { label: "Pending", icon: ClockIcon, classes: "text-amber-700 border-amber-300 bg-amber-50" },
-  rejected: { label: "Rejected", icon: XCircleIcon, classes: "text-red-600 border-red-300 bg-red-50" },
-};
-
-// Stamp-style status badge — the signature element. Slight rotation + bordered
-// to read like a physical document stamp rather than a generic status pill.
-const StatusStamp = ({ status }) => {
-  const config = STATUS_CONFIG[status];
-  if (!config) return null;
-  const Icon = config.icon;
-  return (
-    <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[11px] font-semibold uppercase tracking-wide -rotate-2 ${config.classes}`}
-    >
-      <Icon className="size-3" />
-      {config.label}
-    </span>
-  );
-};
-
-const NAV_ITEMS = [
-  { id: "overview", label: "Overview", icon: LayoutDashboardIcon },
-  { id: "documents", label: "Documents", icon: FileTextIcon },
-  { id: "folders", label: "Folders", icon: FolderIcon },
-  { id: "users", label: "Users & Roles", icon: UsersIcon },
-  { id: "settings", label: "Settings", icon: SettingsIcon },
-];
-
-// --- sidebar -------------------------------------------------------------
-
-const Sidebar = ({ isCollapsed, onToggle }) => {
-  return (
-    <aside
-      className={`hidden md:flex flex-col bg-white border-r border-gray-200 h-screen sticky top-0 transition-all duration-200 ${
-        isCollapsed ? "w-[72px]" : "w-[240px]"
-      }`}
-    >
-     <button
-  type="button"
-  onClick={onToggle}
-  className={`flex items-center gap-3 px-4 h-16 border-b border-gray-200
-  hover:bg-gray-50 transition-colors duration-200
-  ${isCollapsed ? "justify-center" : "justify-between"}
-`}
->
-  <div className="flex items-center gap-3">
-    <div className="bg-blue-800 text-white w-9 h-9 rounded-lg flex justify-center items-center shrink-0">
-      <FileTextIcon className="size-5" />
-    </div>
-
-    {!isCollapsed && (
-      <span className="font-bold text-lg whitespace-nowrap">
-        DocVault
-      </span>
-    )}
-  </div>
-
-  {!isCollapsed && (
-    <ChevronLeftIcon className="size-4 text-gray-400" />
-  )}
-</button>
-
-      <nav className="flex-1 py-4 px-2 flex flex-col gap-1">
-        {NAV_ITEMS.map((item) => {
-          const Icon = item.icon;
-          const isActive = item.id === "overview";
-          return (
-            <button
-              key={item.id}
-              type="button"
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 ${
-                isActive ? "bg-blue-50 text-blue-800" : "text-gray-600 hover:bg-gray-100"
-              } ${isCollapsed ? "justify-center" : ""}`}
-              title={isCollapsed ? item.label : undefined}
-            >
-              <Icon className="size-5 shrink-0" />
-              {!isCollapsed && <span className="whitespace-nowrap">{item.label}</span>}
-            </button>
-          );
-        })}
-      </nav>
-
-
-    </aside>
-  );
-};
-
-// --- topbar -------------------------------------------------------------
-
-const Topbar = ({ searchQuery, onSearchChange, onToggleSidebar, authUser }) => {
-  const displayName = authUser?.fullName || "Admin User";
-  const roleName = authUser?.role || "Administrator";
-  const initial = displayName.charAt(0).toUpperCase();
-
-  return (
-    <header className="sticky top-0 z-10 flex items-center gap-4 h-16 px-4 md:px-6 bg-white border-b border-gray-200">
-
-  <button
-    type="button"
-    onClick={onToggleSidebar}
-    className="md:hidden text-gray-600"
-  >
-    <MenuIcon className="size-6" />
-  </button>
-
-  {/* Search */}
-  <div className="flex-1">
-    <div className="max-w-md">
-      <div className="flex items-center gap-3 border border-gray-300 rounded-lg px-3 py-2 focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-300/20 transition-all duration-200">
-        <SearchIcon className="size-4 text-gray-400 shrink-0" />
-        <input
-          type="text"
-          placeholder="Search documents, folders, people..."
-          className="w-full text-sm focus:outline-none"
-          value={searchQuery}
-          onChange={onSearchChange}
-        />
-      </div>
-    </div>
-  </div>
-
-  {/* Right Section */}
-  <div className="ml-auto flex items-center gap-5">
-
-    <button
-      type="button"
-      className="relative text-gray-500 hover:text-gray-700"
-    >
-      <BellIcon className="size-5" />
-      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] leading-none rounded-full w-4 h-4 flex items-center justify-center">
-        3
-      </span>
-    </button>
-
-    <div className="hidden sm:flex items-center gap-3 pl-5 border-l border-gray-200">
-      <div className="bg-blue-800 text-white w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
-        {initial}
-      </div>
-
-      <div className="leading-tight">
-        <p className="text-sm font-semibold">{displayName}</p>
-        <p className="text-xs text-gray-500">{roleName}</p>
-      </div>
-    </div>
-
-  </div>
-
-</header>
-  );
-};
-
-// --- stat cards -----------------------------------------------------------
+import Sidebar from "../components/Sidebar.jsx";
+import Topbar from "../components/Topbar.jsx";
+import { formatRelativeTime } from "../../lib/utils.js";
+import { StatusStamp } from "../../lib/helper.jsx";
 
 const StatCard = ({ icon: Icon, label, value, sublabel, accent }) => (
   <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-start gap-3">
@@ -232,8 +61,6 @@ const StatsRow = ({ stats }) => {
   );
 };
 
-// --- recent documents -----------------------------------------------------
-
 const RecentDocuments = ({ documents }) => (
   <div className="bg-white border border-gray-200 rounded-lg flex flex-col">
     <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
@@ -264,8 +91,6 @@ const RecentDocuments = ({ documents }) => (
   </div>
 );
 
-// --- activity feed ---------------------------------------------------------
-
 const ActivityFeed = ({ activity }) => (
   <div className="bg-white border border-gray-200 rounded-lg flex flex-col">
     <div className="px-5 py-4 border-b border-gray-200">
@@ -289,8 +114,6 @@ const ActivityFeed = ({ activity }) => (
     </div>
   </div>
 );
-
-// --- folders grid -----------------------------------------------------------
 
 const ACCESS_LEVEL_CLASSES = {
   "Org-wide": "text-emerald-700 bg-emerald-50",
@@ -327,9 +150,7 @@ const FoldersGrid = ({ folders, onFolderSelect }) => (
   </div>
 );
 
-// --- main view ---------------------------------------------------------
-
-const DashboardView = (props) => {
+const DashboardViewPage = (props) => {
   const {
     dashboardState,
     authUser,
@@ -340,13 +161,14 @@ const DashboardView = (props) => {
     handleToggleSidebar,
     handleSearchChange,
     handleFolderSelect,
+    handleNavigate
   } = props;
 
   const { isSidebarCollapsed, searchQuery } = dashboardState;
 
   return (
     <div className="flex bg-[#F8FAFC] min-h-screen">
-      <Sidebar isCollapsed={isSidebarCollapsed} onToggle={handleToggleSidebar} />
+      <Sidebar isCollapsed={isSidebarCollapsed} onToggle={handleToggleSidebar} activeItem={"overview"} onNavigate={handleNavigate} />
 
       <div className="flex-1 min-w-0">
         <Topbar
@@ -380,4 +202,4 @@ const DashboardView = (props) => {
   );
 };
 
-export default DashboardView;
+export default DashboardViewPage;

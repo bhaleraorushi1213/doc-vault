@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+  /* scrollbar-color: transparent transparent; */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
 body {
 	font-family: "Inter", sans-serif;
 	background-color: #f8fafc;
