@@ -22,13 +22,15 @@ const userSchema = new mongoose.Schema(
     department: {
       type: String
     },
-    // role: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Role",
-    //   required: true
-    // },
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+      required: true
+    },
     status: {
-      type: String
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active"
     },
   },
   {

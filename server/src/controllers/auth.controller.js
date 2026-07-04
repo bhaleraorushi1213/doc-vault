@@ -1,12 +1,14 @@
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
+import Role from "../models/role.model.js";
 
 // this is where we will define all routes functionality related to user or users
 //@description     Register new user
 //@route           POST /api/auth/signup
 //@access          Public
 export const signup = async (req, res) => {
+  console.log("Signup request body:", req.body); // Log the request body for debugging
   const { email, name, password } = req.body; // getting name, email, password from request send by frontend
 
   try {
@@ -23,6 +25,14 @@ export const signup = async (req, res) => {
 
     if (user) return res.status(400).json({ message: "Email already exists" }); // send error if exists
 
+    // every new user needs a role assigned - default everyone to "Employee" unless
+    // an admin promotes them later via a separate role-management endpoint
+    const defaultRole = await Role.findOne({ roleName: "Employee" });
+ 
+    if (!defaultRole) {
+      return res.status(500).json({ message: "Default role not configured. Please seed roles first." });
+    }
+
     const salt = await bcrypt.genSalt(10);  // this will generate a salt means random letters to add to password to make it un decryptable
     const hashedPassword = await bcrypt.hash(password, salt);  // here we hashed our password with salt
 
@@ -31,6 +41,7 @@ export const signup = async (req, res) => {
       email,
       name,
       password: hashedPassword,
+      role: defaultRole._id,
     });
 
     if (newUser) {
@@ -40,9 +51,9 @@ export const signup = async (req, res) => {
       // sending success response with users details to frontend
       return res.status(201).json({
         _id: newUser._id,
-        name: newUser.fullName,
+        name: newUser.name,
         email: newUser.email,
-        // isAdmin: newUser.isAdmin,
+        role: defaultRole.roleName,
         profilePicture: newUser?.profilePicture || ""
       });
     } else {
@@ -57,12 +68,11 @@ export const signup = async (req, res) => {
 //@description     Login the user
 //@route           POST /api/auth/login
 //@access          Public 
-
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }).select("+password"); //finding user in database
+    const user = await User.findOne({ email }).select("+password").populate("role", "roleName permissions"); //finding user in database
 
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -70,7 +80,6 @@ export const login = async (req, res) => {
 
     // self explanatory cause of variable name 😅
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    console.log("checking pssword", isPasswordCorrect)
 
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials" });
@@ -82,6 +91,7 @@ export const login = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role?.roleName,
       profilePicture: user?.profilePicture || "",
     })
 

@@ -24,7 +24,10 @@ export const protectRoute = async (req, res, next) => {
       return res.status(401).json({message: "Unauthorized - Invalid Token"})
     }
 
-    const user = await User.findById(decoded.userId) // we are searching user in database if exists or not
+    // we populate "role" here (instead of just fetching the raw user) so that any
+    // route using authorizeRoles / requirePermission downstream can read
+    // req.user.role.roleName and req.user.role.permissions without another DB call
+    const user = await User.findById(decoded.userId).populate("role", "roleName permissions");
 
     if(!user) {
       return res.status(401).json({message: "User not found"});
