@@ -1,6 +1,12 @@
-import { BellIcon, MenuIcon, SearchIcon } from "lucide-react";
+import { useState } from "react";
+import { BellIcon, LogOutIcon, MenuIcon, SearchIcon } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore.js";
 
 const Topbar = ({ searchQuery, onSearchChange, onToggleSidebar, authUser, searchPlaceholder }) => {
+  const [isMenuOpen, setisMenuOpen] = useState(false);
+
+  const { logout } = useAuthStore();
+
   const displayName = authUser?.name || "Admin User";
   const roleName = authUser?.role?.roleName || "Administrator";
   const initial = displayName.charAt(0).toUpperCase();
@@ -34,7 +40,10 @@ const Topbar = ({ searchQuery, onSearchChange, onToggleSidebar, authUser, search
           </span>
         </button>
 
-        <div className="hidden sm:flex items-center gap-3 pl-5 border-l border-gray-200">
+        <div
+          onClick={() => setisMenuOpen(!isMenuOpen)}
+          className="relative hidden sm:flex items-center gap-3 pl-5 border-l border-gray-200 cursor-pointer"
+        >
           <div className="bg-blue-800 text-white w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
             {initial}
           </div>
@@ -42,7 +51,19 @@ const Topbar = ({ searchQuery, onSearchChange, onToggleSidebar, authUser, search
             <p className="text-sm font-semibold">{displayName}</p>
             <p className="text-xs text-gray-500">{roleName}</p>
           </div>
+          {isMenuOpen && (
+            <div className="absolute top-11 right-0 w-full bg-white border border-gray-200 rounded-lg shadow-lg">
+              <button
+                onClick={() => logout()}
+                className="flex gap-2 items-center px-4 py-2 text-sm w-full text-red-500 hover:bg-gray-100 "
+              >
+              <LogOutIcon className="size-4"/>
+                Logout
+              </button>
+            </div>
+          )}
         </div>
+
       </div>
     </header>
   );

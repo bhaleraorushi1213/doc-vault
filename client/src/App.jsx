@@ -27,6 +27,8 @@ const App = () => {
 		);
 	}
 
+  console.log("authUser", authUser);
+
   return (
     <>
       <div className="h-full">
