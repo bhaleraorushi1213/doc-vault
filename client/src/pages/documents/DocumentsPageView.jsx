@@ -12,7 +12,7 @@ import Modal from "../components/Modal"
 import { formatRelativeTime } from "../../lib/utils.js";
 import Sidebar from "../components/Sidebar.jsx";
 import Topbar from "../components/Topbar.jsx";
-import { StatusStamp } from "../../lib/helper.jsx";
+import StatusStamp from "../components/StatusStamp.jsx";
 
 
 const FILTERS = ["All", "Pending", "Approved", "Rejected"];

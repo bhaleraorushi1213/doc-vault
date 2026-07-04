@@ -1,8 +1,7 @@
-import { RoleBadge } from "../../lib/helper.jsx";
 import { formatRelativeTime } from "../../lib/utils.js";
+import RoleBadge from "../components/RoleBadge.jsx";
 import Sidebar from "../components/Sidebar.jsx";
 import Topbar from "../components/Topbar.jsx";
-
 
 const ROLE_OPTIONS = ["Admin", "Manager", "Employee"];
 
@@ -66,7 +65,7 @@ const RolesSummary = ({ roles }) => (
   </div>
 );
 
-const UsersRolesViewPage = (props) => {
+const UserRolesPageView = (props) => {
   const {
     usersState,
     authUser,
@@ -132,4 +131,4 @@ const UsersRolesViewPage = (props) => {
   );
 };
 
-export default UsersRolesViewPage;
+export default UserRolesPageView;

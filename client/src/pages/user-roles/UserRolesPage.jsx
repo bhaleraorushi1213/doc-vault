@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 import { useAuthStore } from "../../store/useAuthStore.js";
 
-import UsersRolesViewPage from "./UsersRolesViewPage";
+import UserRolesPageView from "./UserRolesPageView.jsx";
 
 // Replace with real API calls (GET /api/users, PATCH /api/users/:id/role)
 // when wiring this up for real. This screen should only be reachable by an
@@ -32,7 +32,7 @@ const ROLES = [
   },
 ];
 
-const UsersRolesPage = () => {
+const UserRolesPage = () => {
   const [users, setUsers] = useState(MOCK_USERS);
   const [usersState, setUsersState] = useState({
     isSidebarCollapsed: false,
@@ -63,7 +63,7 @@ const UsersRolesPage = () => {
   };
 
   return (
-    <UsersRolesViewPage
+    <UserRolesPageView
       usersState={usersState}
       authUser={authUser}
       users={users}
@@ -76,4 +76,4 @@ const UsersRolesPage = () => {
   );
 };
 
-export default UsersRolesPage;
+export default UserRolesPage;

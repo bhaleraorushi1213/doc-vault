@@ -10,7 +10,8 @@ import {
 import Sidebar from "../components/Sidebar.jsx";
 import Topbar from "../components/Topbar.jsx";
 import { formatRelativeTime } from "../../lib/utils.js";
-import { StatusStamp } from "../../lib/helper.jsx";
+import StatusStamp from "../components/StatusStamp.jsx";
+
 
 const StatCard = ({ icon: Icon, label, value, sublabel, accent }) => (
   <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-start gap-3">
@@ -150,7 +151,7 @@ const FoldersGrid = ({ folders, onFolderSelect }) => (
   </div>
 );
 
-const DashboardViewPage = (props) => {
+const DashboardPageView = (props) => {
   const {
     dashboardState,
     authUser,
@@ -202,4 +203,4 @@ const DashboardViewPage = (props) => {
   );
 };
 
-export default DashboardViewPage;
+export default DashboardPageView;

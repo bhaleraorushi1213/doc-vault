@@ -1,4 +1,4 @@
-import { RoleBadge } from "../../lib/helper";
+import RoleBadge from "../components/RoleBadge";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
@@ -48,7 +48,7 @@ const Toggle = ({ checked, onChange, label, description }) => (
   </div>
 );
 
-const SettingsViewPage = (props) => {
+const SettingsPageView = (props) => {
   const {
     settingsState,
     authUser,
@@ -196,4 +196,4 @@ const SettingsViewPage = (props) => {
   );
 };
 
-export default SettingsViewPage;
+export default SettingsPageView;

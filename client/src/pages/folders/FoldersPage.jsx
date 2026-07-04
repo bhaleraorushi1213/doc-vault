@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 
 import { useAuthStore } from "../../store/useAuthStore.js";
 
-import FoldersViewPage from "./FoldersViewPage";
+import FoldersPageView from "./FoldersPageView";
 
 // Replace with real API calls (GET /api/folders?parent=<id>, POST /api/folders,
 // PATCH /api/folders/:id, DELETE /api/folders/:id) when wiring this up for real.
@@ -103,7 +103,7 @@ const FoldersPage = () => {
   };
 
   return (
-    <FoldersViewPage
+    <FoldersPageView
       foldersState={foldersState}
       authUser={authUser}
       breadcrumbPath={breadcrumbPath}
