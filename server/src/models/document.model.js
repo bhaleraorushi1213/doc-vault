@@ -42,7 +42,8 @@ const documentSchema = new mongoose.Schema(
     reviewedAt: {
       type: Date,
     },
-  }
+  },
+  { timestamps: true, }
 );
 
 const Document = mongoose.model("Document", documentSchema);

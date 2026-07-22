@@ -11,8 +11,9 @@ import {
 import Modal from "../components/Modal"
 import { formatRelativeTime } from "../../lib/utils.js";
 import Sidebar from "../components/Sidebar.jsx";
-import Topbar from "../components/TopBar.jsx";
+import Topbar from "../components/Topbar.jsx";
 import StatusStamp from "../components/StatusStamp.jsx";
+import { useDocumentStore } from "../../store/useDocumentStore.js";
 
 const FILTERS = ["All", "Pending", "Approved", "Rejected"];
 
@@ -210,7 +211,6 @@ const DocumentsPageView = (props) => {
   const {
     documentsState,
     authUser,
-    documents,
     folders,
     handleToggleSidebar,
     handleSearchChange,
@@ -224,6 +224,8 @@ const DocumentsPageView = (props) => {
   } = props;
 
   const { isSidebarCollapsed, searchQuery, activeFilter, rejectTarget, isUploadOpen } = documentsState;
+
+  const { documents } = useDocumentStore();
 
   // Employees don't have document:approve; Admin/Manager do (matches backend permissions)
   const canApprove = ["Admin", "Manager"].includes(authUser?.role?.roleName);
@@ -276,9 +278,8 @@ const DocumentsPageView = (props) => {
                 key={filter}
                 type="button"
                 onClick={() => handleFilterChange(filter)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-150 ${
-                  activeFilter === filter ? "bg-blue-800 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                }`}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-150 ${activeFilter === filter ? "bg-blue-800 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                  }`}
               >
                 {filter}
               </button>

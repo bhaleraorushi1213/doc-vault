@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 import { useAuthStore } from "../../store/useAuthStore.js";
 
 import DocumentsPageView from "./DocumentsPageView";
+import { useDocumentStore } from "../../store/useDocumentStore.js";
+import { useEffect } from "react";
 
 const MOCK_DOCUMENTS = [
   { id: "d1", name: "Vendor Agreement - Acme Corp.pdf", folder: "Contracts", owner: "Priya Sharma", updatedAt: "2026-06-27T14:30:00Z", status: "approved", size: "2.4 MB" },
@@ -23,7 +25,6 @@ const MOCK_FOLDERS = [
 ];
 
 const DocumentsPage = () => {
-  const [documents, setDocuments] = useState(MOCK_DOCUMENTS);
   const [documentsState, setDocumentsState] = useState({
     isSidebarCollapsed: false,
     searchQuery: "",
@@ -33,8 +34,13 @@ const DocumentsPage = () => {
   });
 
   const { authUser } = useAuthStore();
+  const { getDocuments } = useDocumentStore();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getDocuments();
+  }, [getDocuments]);
 
   const handleToggleSidebar = () => {
     setDocumentsState((prev) => ({ ...prev, isSidebarCollapsed: !prev.isSidebarCollapsed }));
@@ -61,55 +67,55 @@ const DocumentsPage = () => {
 
   const handleDelete = (docId) => {
     // real version: await fetch(`/api/documents/${docId}`, { method: "DELETE" })
-    setDocuments((prev) => prev.filter((d) => d.id !== docId));
+    // setDocuments((prev) => prev.filter((d) => d.id !== docId));
   };
 
   const handleApprove = (docId) => {
     // real version: await fetch(`/api/documents/${docId}/status`, { method: "PATCH", body: { status: "Approved" } })
-    setDocuments((prev) =>
-      prev.map((d) => (d.id === docId ? { ...d, status: "approved", rejectionComment: undefined } : d))
-    );
+    // setDocuments((prev) =>
+    //   prev.map((d) => (d.id === docId ? { ...d, status: "approved", rejectionComment: undefined } : d))
+    // );
   };
 
   const handleReject = {
     open: (doc) => setDocumentsState((prev) => ({ ...prev, rejectTarget: doc })),
     close: () => setDocumentsState((prev) => ({ ...prev, rejectTarget: null })),
-    confirm: (docId, comment) => {
-      // real version: await fetch(`/api/documents/${docId}/status`, { method: "PATCH", body: { status: "Rejected", comment } })
-      setDocuments((prev) =>
-        prev.map((d) => (d.id === docId ? { ...d, status: "rejected", rejectionComment: comment } : d))
-      );
-      setDocumentsState((prev) => ({ ...prev, rejectTarget: null }));
-    },
+    // confirm: (docId, comment) => {
+    //   // real version: await fetch(`/api/documents/${docId}/status`, { method: "PATCH", body: { status: "Rejected", comment } })
+    //   // setDocuments((prev) =>
+    //   //   prev.map((d) => (d.id === docId ? { ...d, status: "rejected", rejectionComment: comment } : d))
+    //   // );
+    //   setDocumentsState((prev) => ({ ...prev, rejectTarget: null }));
+    // },
   };
 
   const handleUpload = {
     open: () => setDocumentsState((prev) => ({ ...prev, isUploadOpen: true })),
     close: () => setDocumentsState((prev) => ({ ...prev, isUploadOpen: false })),
-    confirm: (file, folderId) => {
+    // confirm: (file, folderId) => {
       // real version: build FormData with "file" + "folder", POST to /api/documents
-      const folderName = MOCK_FOLDERS.find((f) => f.id === folderId)?.name || null;
-      setDocuments((prev) => [
-        {
-          id: `d${prev.length + 1}`,
-          name: file.name,
-          folder: folderName,
-          owner: authUser?.name || "You",
-          updatedAt: new Date().toISOString(),
-          status: "pending",
-          size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
-        },
-        ...prev,
-      ]);
-      setDocumentsState((prev) => ({ ...prev, isUploadOpen: false }));
-    },
+      // const folderName = MOCK_FOLDERS.find((f) => f.id === folderId)?.name || null;
+      // setDocuments((prev) => [
+      //   {
+      //     id: `d${prev.length + 1}`,
+      //     name: file.name,
+      //     folder: folderName,
+      //     owner: authUser?.name || "You",
+      //     updatedAt: new Date().toISOString(),
+      //     status: "pending",
+      //     size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+      //   },
+      //   ...prev,
+    //   // ]);
+    //   setDocumentsState((prev) => ({ ...prev, isUploadOpen: false }));
+    // },
   };
 
   return (
     <DocumentsPageView
       documentsState={documentsState}
       authUser={authUser}
-      documents={documents}
+      // documents={documents}
       folders={MOCK_FOLDERS}
       handleToggleSidebar={handleToggleSidebar}
       handleSearchChange={handleSearchChange}

@@ -45,7 +45,7 @@ export const getFolders = async (req, res) => {
 
   try {
     const folders = await Folder.find({
-      owner: req.user._id,
+      // owner: req.user._id,
       parent: parent || null,
     }).sort({ folderName: 1 });
 

@@ -1,33 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuthStore } from "../../store/useAuthStore.js";
+import { useFolderStore } from "../../store/useFolderStore.js";
 
 import FoldersPageView from "./FoldersPageView";
-
-// Replace with real API calls (GET /api/folders?parent=<id>, POST /api/folders,
-// PATCH /api/folders/:id, DELETE /api/folders/:id) when wiring this up for real.
-const MOCK_FOLDERS = [
-  { id: "f1", name: "Contracts", parent: null, documentCount: 2 },
-  { id: "f2", name: "Finance", parent: null, documentCount: 1 },
-  { id: "f3", name: "HR Policies", parent: null, documentCount: 1 },
-  { id: "f4", name: "Legal", parent: null, documentCount: 0 },
-  { id: "f5", name: "Marketing", parent: null, documentCount: 1 },
-  { id: "f1a", name: "Vendor Agreements", parent: "f1", documentCount: 3 },
-  { id: "f1b", name: "NDAs", parent: "f1", documentCount: 5 },
-];
-
-const MOCK_DOCUMENTS = [
-  { id: "d1", name: "Vendor Agreement - Acme Corp.pdf", folder: "f1", owner: "Priya Sharma", updatedAt: "2026-06-27T14:30:00Z", status: "approved", size: "2.4 MB" },
-  { id: "d2", name: "Q2 Financial Audit.xlsx", folder: "f2", owner: "Rohit Mehta", updatedAt: "2026-06-27T09:12:00Z", status: "pending", size: "1.1 MB" },
-  { id: "d3", name: "Employee Handbook v3.docx", folder: "f3", owner: "Ananya Iyer", updatedAt: "2026-06-26T18:05:00Z", status: "approved", size: "640 KB" },
-  { id: "d4", name: "NDA - Skyline Logistics.pdf", folder: "f1", owner: "Priya Sharma", updatedAt: "2026-06-26T11:20:00Z", status: "rejected", size: "318 KB" },
-  { id: "d6", name: "Brand Guidelines 2026.pdf", folder: "f5", owner: "Sneha Kulkarni", updatedAt: "2026-06-24T10:00:00Z", status: "approved", size: "12.2 MB" },
-];
+import { useDocumentStore } from "../../store/useDocumentStore.js";
 
 const FoldersPage = () => {
-  const [folders, setFolders] = useState(MOCK_FOLDERS);
-  const [documents] = useState(MOCK_DOCUMENTS);
+  // const [folders, setFolders] = useState(MOCK_FOLDERS);
+  // const [documents] = useState(MOCK_DOCUMENTS);
   const [foldersState, setFoldersState] = useState({
     isSidebarCollapsed: false,
     searchQuery: "",
@@ -37,14 +19,67 @@ const FoldersPage = () => {
 
   const { authUser } = useAuthStore();
 
+  const { folders, getFolders, setFolders } = useFolderStore();
+  const { documents, getDocuments } = useDocumentStore();
+
+  useEffect(() => {
+    getFolders();
+  }, [getFolders])
+
   const navigate = useNavigate();
+
+  const mock_folders = [
+    {
+      "_id": "6a48dc2b6a50f1901beccbf1",
+      "folderName": "docs",
+      "parent": null,
+      "owner": "6a4630ea89b6d99bd5e810db",
+      "createdAt": "2026-07-04T10:10:51.458Z",
+      "updatedAt": "2026-07-04T10:10:51.458Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a48dc1f6a50f1901beccbef",
+      "folderName": "temp",
+      "parent": null,
+      "owner": "6a4630ea89b6d99bd5e810db",
+      "createdAt": "2026-07-04T10:10:39.285Z",
+      "updatedAt": "2026-07-04T10:10:39.285Z",
+      "__v": 0
+    }
+  ]
+
+  const file = [
+    {
+      "_id": "6a48e0ff6a50f1901beccbf3",
+      "fileName": "Marksheets_merged.pdf",
+      "fileUrl": "E:\\Projects\\doc-vault\\server\\uploads\\1783161087374-743428864.pdf",
+      "fileSize": 861486,
+      "fileType": "application/pdf",
+      "folder": "6a48dc1f6a50f1901beccbef",
+      "uploadedBy": "6a4630ea89b6d99bd5e810db",
+      "approvalStatus": "Pending",
+      "__v": 0
+    },
+    {
+      "_id": "6a4925ea36b2e754c1a2dc79",
+      "fileName": "Marksheets_merged.pdf",
+      "fileUrl": "1783178730116-19253773.pdf",
+      "fileSize": 861486,
+      "fileType": "application/pdf",
+      "folder": "6a48dc1f6a50f1901beccbef",
+      "uploadedBy": "6a4630ea89b6d99bd5e810db",
+      "approvalStatus": "Pending",
+      "__v": 0
+    }
+  ]
 
   // build the breadcrumb trail by walking up from the current folder's parent chain
   const breadcrumbPath = useMemo(() => {
     const path = [];
     let currentId = foldersState.currentFolderId;
     while (currentId) {
-      const folder = folders.find((f) => f.id === currentId);
+      const folder = folders.find((f) => f._id === currentId);
       if (!folder) break;
       path.unshift(folder);
       currentId = folder.parent;
@@ -52,7 +87,12 @@ const FoldersPage = () => {
     return path;
   }, [foldersState.currentFolderId, folders]);
 
-  const subfolders = folders.filter((f) => f.parent === foldersState.currentFolderId);
+  const subfolders = folders.filter((f) => {
+    // console.log("f", f.parent)
+    // console.log("currentFolderId", foldersState.currentFolderId)
+    return f.parent === foldersState.currentFolderId;
+  });
+
   const documentsInFolder = documents.filter((d) => d.folder === foldersState.currentFolderId);
 
   const handleToggleSidebar = () => {
@@ -67,12 +107,15 @@ const FoldersPage = () => {
     navigate(item.path);
   };
 
-  const handleFolderOpen = (folder) => {
-    setFoldersState((prev) => ({ ...prev, currentFolderId: folder.id }));
+  const handleFolderOpen = async (folder) => {
+    await getFolders(folder._id);
+    await getDocuments(folder._id);
+    setFoldersState((prev) => ({ ...prev, currentFolderId: folder._id }));
   };
 
-  const handleBreadcrumbNavigate = (folderId) => {
-    setFoldersState((prev) => ({ ...prev, currentFolderId: folderId }));
+  const handleBreadcrumbNavigate = async (folderId) => {
+    await getFolders(folderId);
+    setFoldersState((prev) => ({ ...prev, currentFolderId: folderId ? folderId : null }));
   };
 
   const handleCreateFolder = {
@@ -90,7 +133,7 @@ const FoldersPage = () => {
 
   const handleRenameFolder = (folder) => {
     // real version: open a rename modal, then PATCH /api/folders/:id with { name }
-    const newName = window.prompt("Rename folder", folder.name);
+    const newName = window.prompt("Rename folder", folder.folderName);
     if (newName?.trim()) {
       setFolders((prev) => prev.map((f) => (f.id === folder.id ? { ...f, name: newName.trim() } : f)));
     }

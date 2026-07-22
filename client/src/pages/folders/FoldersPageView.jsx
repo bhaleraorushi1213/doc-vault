@@ -5,7 +5,7 @@ import { formatRelativeTime } from "../../lib/utils.js";
 
 import Modal from "../components/Modal.jsx";
 import Sidebar from "../components/Sidebar.jsx";
-import Topbar from "../components/TopBar.jsx";
+import Topbar from "../components/Topbar.jsx";
 import StatusStamp from "../components/StatusStamp.jsx";
 
 const CreateFolderModal = ({ onClose, onConfirm }) => {
@@ -58,10 +58,10 @@ const Breadcrumb = ({ path, onNavigate }) => (
       Root
     </button>
     {path.map((folder) => (
-      <span key={folder.id} className="flex items-center gap-1.5">
+      <span key={folder._id} className="flex items-center gap-1.5">
         <ChevronRightIcon className="size-3.5 text-gray-300" />
-        <button type="button" onClick={() => onNavigate(folder.id)} className="text-gray-500 hover:text-blue-700 font-medium">
-          {folder.name}
+        <button type="button" onClick={() => onNavigate(folder._id)} className="text-gray-500 hover:text-blue-700 font-medium">
+          {folder.folderName}
         </button>
       </span>
     ))}
@@ -126,7 +126,7 @@ const FoldersPageView = (props) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-5">
                 {subfolders.map((folder) => (
                   <div
-                    key={folder.id}
+                    key={folder._id}
                     className="group flex items-start gap-3 border border-gray-200 rounded-lg p-4 text-left hover:border-blue-300 hover:shadow-sm transition-all duration-150"
                   >
                     <button type="button" onClick={() => handleFolderOpen(folder)} className="flex items-start gap-3 flex-1 min-w-0 text-left">
@@ -134,15 +134,15 @@ const FoldersPageView = (props) => {
                         <FolderIcon className="size-5" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{folder.name}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{folder.documentCount} documents</p>
+                        <p className="text-sm font-medium truncate">{folder.folderName}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{folder.length} documents</p>
                       </div>
                     </button>
                     <div className="hidden group-hover:flex items-center gap-1 shrink-0">
                       <button type="button" onClick={() => handleRenameFolder(folder)} title="Rename" className="p-1 text-gray-400 hover:text-blue-700">
                         <PencilIcon className="size-3.5" />
                       </button>
-                      <button type="button" onClick={() => handleDeleteFolder(folder.id)} title="Delete" className="p-1 text-gray-400 hover:text-red-600">
+                      <button type="button" onClick={() => handleDeleteFolder(folder._id)} title="Delete" className="p-1 text-gray-400 hover:text-red-600">
                         <Trash2Icon className="size-3.5" />
                       </button>
                     </div>
@@ -161,13 +161,13 @@ const FoldersPageView = (props) => {
             ) : (
               <div className="divide-y divide-gray-100">
                 {documentsInFolder.map((doc) => (
-                  <div key={doc.id} className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors duration-150">
+                  <div key={doc._id} className="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors duration-150">
                     <div className="bg-blue-50 text-blue-700 w-9 h-9 rounded-lg flex items-center justify-center shrink-0">
                       <FileTextIcon className="size-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">{doc.name}</p>
-                      <p className="text-xs text-gray-500">{doc.owner} · {doc.size}</p>
+                      <p className="text-sm font-medium truncate">{doc.fileName}</p>
+                      <p className="text-xs text-gray-500">{doc.owner} · {doc.fileSize}</p>
                     </div>
                     <div className="hidden sm:block text-xs text-gray-400 whitespace-nowrap">{formatRelativeTime(doc.updatedAt)}</div>
                     <StatusStamp status={doc.status} />

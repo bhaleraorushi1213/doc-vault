@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import Sidebar from "../components/Sidebar.jsx";
-import Topbar from "../components/TopBar.jsx";
+import Topbar from "../components/Topbar.jsx";
 import { formatRelativeTime } from "../../lib/utils.js";
 import StatusStamp from "../components/StatusStamp.jsx";
 
