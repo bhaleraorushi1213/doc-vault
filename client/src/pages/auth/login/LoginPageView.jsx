@@ -89,9 +89,8 @@ const LoginPageView = (props) => {
               {isLoggingIn ?
                 <Loader className="size-5 animate-spin" /> :
                 <>
-                  Create Account
+                  Login
                   <ArrowRight className="size-6" />
-
                 </>
               }
             </button>
